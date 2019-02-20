@@ -1,15 +1,24 @@
 const net = require('net');
-var message = 'www.google.com';
+var fs = require('fs');
+var message = 'www.youtube.com';
 
 var client = net.Socket();
 client.connect(8080, () => {
     client.write(message);
 });
 
-client.on('data', (data) => {
-    console.log(data.toString());
-});
-
+	let data = '';
+	client.on('data', (chunk) => {
+		data += chunk;
+		client.destroy;
+		console.log(data);
+			fs.writeFile('receivedData.html', data, function(err, data){
+			if (err) console.log(err);
+			console.log("Successfully Written to File.");
+		});
+		
+	});
+		
 client.on('close', () => {
     console.log('Connection closed');
 });

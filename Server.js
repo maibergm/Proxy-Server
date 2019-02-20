@@ -13,7 +13,7 @@ server.on('connection', (socket) => {
 		var dataString = data.toString();
 		
 		const https = require('https');
-		https.get('https://www.google.com', (resp) => {
+		https.get('https://' +dataString, (resp) => {
 			
 	    let data = '';
 		resp.on('data', (chunk) => {
@@ -21,16 +21,13 @@ server.on('connection', (socket) => {
 	  });
 
 	  resp.on('end', () => {
-		
+		 socket.write(data); 
 		 console.log(data);
 	  });
 
 	}).on("error", (err) => {
 	  console.log("Error: " + err.message);
 	});
-	
 	//	console.log("Sent string by client" + dataString);
-	//	socket.write("You sent me this -> "  +dataString); 
-		socket.destroy();
 	});
 });

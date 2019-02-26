@@ -2,6 +2,10 @@ const net = require('net');
 
 var server = net.createServer();
 server.listen(8080);
+var dict = {
+	
+};
+
 console.log('Listening');
 
 server.on('connection', (socket) => { 
@@ -10,8 +14,13 @@ server.on('connection', (socket) => {
 	});
 	
 	socket.on('data', (data) => { 
-		var dataString = data.toString();
-		
+	    console.time("db.save");
+		var dataString = data.toString(); //Recieved request in a var 
+		for(var key in dict) {       //search for link in cache 
+				
+				var value = dict[dataString];	
+		}		
+		if (value == null) {
 		const https = require('https');
 		https.get('https://' +dataString, (resp) => {
 			
@@ -22,12 +31,25 @@ server.on('connection', (socket) => {
 
 	  resp.on('end', () => {
 		 socket.write(data); 
-		 console.log(data);
+		 console.log("Time taken to retrieve data :");
+		 console.timeEnd("db.save");
+		 if (value == null)  //if it wasnt in cache, save to it 
+		{
+			
+			dict[dataString]		= data;
+		}
+	//	console.log(dict[dataString]);
 	  });
 
 	}).on("error", (err) => {
 	  console.log("Error: " + err.message);
 	});
-	//	console.log("Sent string by client" + dataString);
+		}
+		else { 
+		socket.write(value);
+		console.log("data has been written");
+		console.log("Time taken to retrieve data :");
+		console.timeEnd("db.save");	
+		}
 	});
 });
